@@ -33,6 +33,11 @@
       color: #856404;
     }
     
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
     button {
       width: 100%;
       padding: 12px;
@@ -44,6 +49,7 @@
       font-weight: 500;
       cursor: pointer;
       transition: background 0.2s;
+      margin-bottom: 8px;
     }
     
     button:hover {
@@ -55,14 +61,13 @@
       cursor: not-allowed;
     }
     
-    .secondary-btn {
+    button.secondary {
       background: white;
       color: #191919;
       border: 1px solid #d1d1d1;
-      margin-top: 8px;
     }
     
-    .secondary-btn:hover {
+    button.secondary:hover {
       background: #f5f5f5;
     }
     
@@ -70,6 +75,36 @@
       font-size: 13px;
       color: #666;
       margin-bottom: 16px;
+    }
+    
+    .usage-stats {
+      background: #f5f5f5;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    
+    .usage-bar {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+    
+    .usage-fill {
+      height: 100%;
+      background: #191919;
+      transition: width 0.3s;
+    }
+    
+    .usage-fill.warning {
+      background: #f59e0b;
+    }
+    
+    .usage-fill.danger {
+      background: #dc2626;
     }
     
     .loading {
@@ -82,13 +117,65 @@
     .loading.active {
       display: block;
     }
+    
+    .feedback {
+      margin-top: 16px;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    
+    .feedback-btn {
+      flex: 1;
+      padding: 8px;
+      background: white;
+      border: 1px solid #d1d1d1;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: auto;
+    }
+    
+    .feedback-btn:hover {
+      background: #e8e8e8;
+      transform: scale(1.05);
+    }
+    
+    .privacy-note {
+      font-size: 11px;
+      color: #999;
+      margin-top: 16px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    
+    .privacy-note a {
+      color: #666;
+      text-decoration: underline;
+    }
+    
+    .reset-info {
+      font-size: 11px;
+      color: #999;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
   <h1>🗂️ AI Tab Organizer</h1>
   
-  <div id="status" class="status warning" style="display: none;">
-    Please set up your Claude API key first
+  <div id="status" class="status" style="display: none;"></div>
+  
+  <div id="usageStats" class="usage-stats">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+      <span><strong id="usedCount">-</strong> / <span id="limitCount">10</span> used this month</span>
+      <span id="remainingCount" style="color: #666;">- left</span>
+    </div>
+    <div class="usage-bar">
+      <div id="usageFill" class="usage-fill" style="width: 0%"></div>
+    </div>
+    <div class="reset-info">Resets <span id="resetDate">-</span></div>
   </div>
   
   <div class="tab-count">
@@ -96,10 +183,22 @@
   </div>
   
   <button id="organizeBtn">Organize Tabs</button>
-  <button id="settingsBtn" class="secondary-btn">Settings</button>
   
   <div id="loading" class="loading">
     Organizing your tabs...
+  </div>
+  
+  <div id="feedback" class="feedback" style="display: none;">
+    <p style="font-size: 13px; margin-bottom: 8px; color: #666;">How did we do?</p>
+    <div style="display: flex; gap: 8px;">
+      <button id="feedbackGood" class="feedback-btn">👍 Good</button>
+      <button id="feedbackBad" class="feedback-btn">👎 Needs work</button>
+    </div>
+  </div>
+  
+  <div class="privacy-note">
+    🔒 Privacy-first • Only tab titles + domains sent to AI<br>
+    <a href="https://github.com/DanCsoftware/Tabs/blob/main/PRIVACY.md" target="_blank">Read Privacy Policy</a>
   </div>
   
   <script src="popup.js"></script>
