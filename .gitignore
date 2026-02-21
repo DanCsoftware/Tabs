@@ -1,0 +1,27 @@
+# API Keys and Secrets
+config.js
+
+# Icons (user needs to add their own)
+icons/*.png
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build artifacts
+*.zip
+dist/
+build/
