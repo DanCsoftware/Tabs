@@ -1,6 +1,7 @@
 // background.js - Calls backend API (NO API KEY!)
 
 const BACKEND_URL = 'https://tab-organizer-backend.vercel.app';
+const EXTENSION_SECRET = 'tabs_k8m3n9p2q5r7s1t4u6v8w0x2y4z6'; // 🔒 Must match Vercel env variable
 
 // Generate or retrieve unique user ID for rate limiting
 async function getUserId() {
@@ -87,7 +88,11 @@ async function getUsageStats() {
   try {
     const userId = await getUserId();
     
-    const response = await fetch(`${BACKEND_URL}/api/usage?userId=${userId}`);
+    const response = await fetch(`${BACKEND_URL}/api/usage?userId=${userId}`, {
+      headers: {
+        'X-Extension-Auth': EXTENSION_SECRET  // 🔒 Authentication
+      }
+    });
     
     if (!response.ok) {
       throw new Error('Failed to get usage stats');
@@ -135,7 +140,8 @@ async function organizeTabs() {
     const response = await fetch(`${BACKEND_URL}/api/organize`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Extension-Auth': EXTENSION_SECRET  // 🔒 Authentication
       },
       body: JSON.stringify({
         tabData,
@@ -167,7 +173,9 @@ async function organizeTabs() {
     const colors = ['blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan', 'orange'];
     let colorIndex = 0;
     let groupsCreated = 0;
+    const createdGroupIds = [];
     
+    // Create all groups first
     for (const category of categoriesWithRealIds) {
       if (category.tabIds.length > 0) {
         const groupId = await chrome.tabs.group({ tabIds: category.tabIds });
@@ -178,10 +186,33 @@ async function organizeTabs() {
           collapsed: false
         });
         
+        createdGroupIds.push({ groupId, name: category.name });
+        
         console.log(`📁 Created group: "${category.name}" with ${category.tabIds.length} tabs`);
         
         colorIndex++;
         groupsCreated++;
+      }
+    }
+    
+    // Mac rendering fix: Force re-render all groups after creation
+    console.log('🔧 Forcing Mac to render group names...');
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    // Collapse and immediately expand each group to force Mac to render names
+    for (const { groupId, name } of createdGroupIds) {
+      try {
+        // Collapse
+        await chrome.tabGroups.update(groupId, { collapsed: true });
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        // Expand
+        await chrome.tabGroups.update(groupId, { collapsed: false });
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        console.log(`✓ Rendered: "${name}"`);
+      } catch (error) {
+        console.warn(`Could not re-render group "${name}":`, error);
       }
     }
     
@@ -221,16 +252,24 @@ function validateAndFixCategories(categories, totalTabs) {
   }
   
   if (orphanedTabs.length > 0) {
-    console.warn(`⚠️ Found ${orphanedTabs.length} orphaned tabs`);
+    console.warn(`⚠️ Found ${orphanedTabs.length} orphaned tabs, adding to groups`);
     
-    let largestCat = categories[0];
-    for (const cat of categories) {
-      if (cat.tabIndices.length > largestCat.tabIndices.length) {
-        largestCat = cat;
+    // Find largest category or create a new one
+    if (categories.length > 0) {
+      let largestCat = categories[0];
+      for (const cat of categories) {
+        if (cat.tabIndices && cat.tabIndices.length > largestCat.tabIndices.length) {
+          largestCat = cat;
+        }
       }
+      largestCat.tabIndices.push(...orphanedTabs);
+    } else {
+      // If no categories exist, create one with all orphaned tabs
+      categories.push({
+        name: 'General',
+        tabIndices: orphanedTabs
+      });
     }
-    
-    largestCat.tabIndices.push(...orphanedTabs);
   }
   
   const lazyNames = ['other', 'misc', 'miscellaneous', 'random', 'stuff'];
