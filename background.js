@@ -90,7 +90,7 @@ async function getUsageStats() {
     
     const response = await fetch(`${BACKEND_URL}/api/usage?userId=${userId}`, {
       headers: {
-        'X-Extension-Auth': EXTENSION_SECRET  // 🔒 Authentication
+        'X-Extension-Auth': EXTENSION_SECRET
       }
     });
     
@@ -141,7 +141,7 @@ async function organizeTabs() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Extension-Auth': EXTENSION_SECRET  // 🔒 Authentication
+        'X-Extension-Auth': EXTENSION_SECRET
       },
       body: JSON.stringify({
         tabData,
@@ -155,9 +155,37 @@ async function organizeTabs() {
     }
     
     const data = await response.json();
-    const categories = data.categories;
+    
+    // 🔧 FIX: Robust category extraction
+    let categories;
+    
+    // Debug logging
+    console.log('📦 Full backend response:', data);
+    console.log('📦 Response type:', typeof data);
+    
+    // Extract categories safely
+    if (data && typeof data === 'object') {
+      if (Array.isArray(data.categories)) {
+        // Standard case: {success: true, categories: [...], remaining: 9}
+        categories = data.categories;
+      } else if (Array.isArray(data)) {
+        // Fallback: Backend returned array directly
+        categories = data;
+      } else if (data.categories && typeof data.categories === 'object' && data.categories.categories) {
+        // Double-nested case (sometimes happens with proxies)
+        categories = data.categories.categories;
+      } else {
+        // Unknown format
+        console.error('⚠️ Unexpected backend response format:', data);
+        categories = [];
+      }
+    } else {
+      categories = [];
+    }
     
     console.log('🤖 AI suggested categories:', categories);
+    console.log('🤖 Is array?', Array.isArray(categories));
+    console.log('🤖 Length:', categories.length);
     
     const validatedCategories = validateAndFixCategories(categories, tabs.length);
     
@@ -219,7 +247,7 @@ async function organizeTabs() {
     return {
       success: true,
       groupCount: groupsCreated,
-      remaining: data.remaining
+      remaining: data.remaining || 0
     };
     
   } catch (error) {
@@ -233,7 +261,7 @@ async function organizeTabs() {
 
 function validateAndFixCategories(categories, totalTabs) {
   if (!Array.isArray(categories) || categories.length === 0) {
-    console.warn('⚠️ AI returned invalid response');
+    console.warn('⚠️ AI returned invalid response - using fallback');
     return createFallbackCategories(totalTabs);
   }
   
