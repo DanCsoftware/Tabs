@@ -1,10 +1,25 @@
 # 🗂️ AI Tab Organizer
 
-**Smart tab organization powered by AI - learns from your usage**
+Smart tab organization powered by AI - learns from your usage
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Privacy](https://img.shields.io/badge/privacy-first-green)
-![License](https://img.shields.io/badge/license-MIT-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-blue) ![Privacy](https://img.shields.io/badge/privacy-first-green) ![License](https://img.shields.io/badge/license-MIT-orange)
+
+---
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td><img src="screenshots/screenshot-1.png" alt="Tabs before organizing" /></td>
+    <td><img src="screenshots/screenshot-2.png" alt="Extension popup" /></td>
+    <td><img src="screenshots/screenshot-3.png" alt="Organized tab groups" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Before: Many ungrouped tabs</em></td>
+    <td align="center"><em>Extension popup with usage tracking</em></td>
+    <td align="center"><em>After: Clean organized groups</em></td>
+  </tr>
+</table>
 
 ---
 
@@ -14,7 +29,7 @@
 - 🧠 **Learns From You** - Remembers your manual adjustments
 - 🎁 **10 Free/Month** - No credit card, no signup
 - ⚡ **Lightning Fast** - Organizes 50+ tabs in seconds
-- 🔒 **Privacy-First** - All learning happens locally
+- 🔒 **Privacy-First** - Only tab titles & domains sent to AI
 - 📊 **Usage Tracking** - See how many organizes you have left
 
 ---
@@ -23,35 +38,60 @@
 
 ### Installation
 
-1. Download or clone this repository
-2. Open `chrome://extensions/` or `brave://extensions/`
-3. Enable "Developer mode" (toggle top-right)
-4. Click "Load unpacked"
-5. Select this folder
+1. Download from [Chrome Web Store](https://chrome.google.com/webstore) (or load unpacked for development)
+2. Click the extension icon
+3. Click "Organize Tabs"
+4. Done! Your tabs are automatically grouped
 
 ### Usage
 
 1. Click the extension icon
 2. Click "Organize Tabs"
-3. Your tabs are automatically grouped!
-4. Rate with 👍 or 👎
-5. Extension learns from your adjustments
+3. Your tabs are automatically grouped by category
+4. Rate with 👍 or 👎 to help it learn
+5. Manually adjust groups - extension remembers your preferences
 
 ---
 
 ## 🔒 Privacy & Security
 
 ### What We Access:
-- ✅ Tab titles (e.g., "GitHub - Pull Request")
-- ✅ Tab domains only (e.g., "github.com")
+
+✅ **Tab titles** (e.g., "GitHub - Pull Request")  
+✅ **Tab domains only** (e.g., "github.com")  
+✅ **Your manual grouping preferences** (stored locally)
 
 ### What We DON'T Access:
-- ❌ Full URLs or paths
-- ❌ Page content or browsing history
-- ❌ Passwords or personal data
-- ❌ Cookies or form data
 
-**Read more:** [Privacy Policy](PRIVACY.md) | [Security FAQ](SECURITY-FAQ.md)
+❌ Full URLs or paths  
+❌ Page content or browsing history  
+❌ Passwords or personal data  
+❌ Cookies or form data  
+
+**Read more:** [Privacy Policy](PRIVACY.md)
+
+---
+
+## 📡 How It Works
+
+### Architecture:
+
+```
+You → Extension → Secure Backend (Vercel) → Claude AI → Results → Groups Created
+```
+
+1. **Extension** collects tab titles and domains
+2. **Backend** securely calls Claude AI with your data
+3. **AI** suggests categories (Development, Social, Shopping, etc.)
+4. **Extension** creates tab groups automatically
+5. **Learning** happens locally - your preferences stay in your browser
+
+### Why a Backend?
+
+- 🔒 **Security** - API key never exposed in extension code
+- 💰 **Free for you** - We cover the AI costs
+- ⚡ **Fast** - Optimized API calls
+- 📊 **Fair usage** - 10 free organizes/month per user
 
 ---
 
@@ -64,16 +104,17 @@ The extension learns from your behavior:
 3. **It learns:** Remembers "github.com goes in Development"
 4. **Next time:** Automatically uses your preferences
 
-**All learning happens locally** - nothing sent to servers!
+**All learning happens locally** - your preferences never leave your browser!
 
 ---
 
 ## 💎 Free Tier
 
-- **10 organizes per month**
-- Resets on the 1st of each month
-- Perfect for most users
-- No credit card required
+- ✅ 10 organizes per month
+- ✅ Resets on the 1st of each month
+- ✅ Perfect for most users
+- ✅ No credit card required
+- ✅ No signup needed
 
 ---
 
@@ -83,7 +124,7 @@ The extension learns from your behavior:
 - **Researchers** - Organize papers and articles
 - **Shoppers** - Group deals and reviews
 - **Students** - Separate by class/subject
-- **Anyone** with 10+ tabs open constantly!
+- **Anyone with 10+ tabs open constantly!**
 
 ---
 
@@ -91,39 +132,54 @@ The extension learns from your behavior:
 
 When you click "Organize Tabs":
 
-**Sent to Claude AI:**
+### ✅ Sent to our secure backend:
 ```
 0. GitHub - Pull Request (github.com)
 1. Gmail (mail.google.com)
 2. Twitter (twitter.com)
 ```
 
-**NOT sent:**
-```
-❌ github.com/your-company/secret-project
-❌ Full URLs, page content, passwords
-❌ Your browsing history
-```
+### ❌ NOT sent:
+- Full URLs (e.g., `github.com/your-company/secret-project`)
+- Page content or text
+- Passwords or form data
+- Your browsing history
+- Cookies or session data
 
-Only **domain names** and **tab titles** - that's it!
+**Only tab titles and domain names - that's it!**
 
 ---
 
 ## ⚠️ Known Issues
 
-### Brave Browser
-Tab group names may not display until clicked. This is a Brave rendering bug.
+### macOS (Chrome & Brave)
 
-**Workaround:** Click each colored group box once to see names.
+Tab group names may not display immediately on macOS. This is a browser rendering issue on Mac.
+
+**Workaround:** Groups are created correctly - names appear after clicking into any tab in the group.
+
+**Status:** This affects all tab group extensions on macOS and cannot be fixed from the extension side.
 
 ---
 
 ## 🛠️ Tech Stack
 
 - **AI:** Claude Haiku 3 (Anthropic)
+- **Backend:** Vercel Serverless Functions (Node.js)
 - **Platform:** Chrome Extensions Manifest V3
 - **Storage:** Local browser storage (privacy!)
+- **Security:** Backend authentication, IP rate limiting
 - **Tracking:** None whatsoever
+
+---
+
+## 🔐 Security Features
+
+- ✅ **No API keys in extension code** - Secure backend architecture
+- ✅ **IP rate limiting** - 20 requests/hour per IP maximum
+- ✅ **User rate limiting** - 10 organizes/month per user
+- ✅ **Billing caps** - Protected against abuse
+- ✅ **Open source** - Verify the code yourself
 
 ---
 
@@ -131,13 +187,15 @@ Tab group names may not display until clicked. This is a Brave rendering bug.
 
 Contributions welcome!
 
-**How to contribute:**
+### How to contribute:
+
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
 4. Submit a pull request
 
-**Guidelines:**
+### Guidelines:
+
 - Keep privacy-first approach
 - No tracking or analytics
 - Open source, transparent
@@ -153,23 +211,33 @@ MIT License - Use however you want!
 
 ## 💬 Support
 
-**Questions? Issues?**
-- GitHub Issues: [Open an issue](https://github.com/DanCsoftware/Tabs/issues)
-- Privacy concerns: See [PRIVACY.md](PRIVACY.md)
-- Security questions: See [SECURITY-FAQ.md](SECURITY-FAQ.md)
+Questions? Issues?
+
+- **GitHub Issues:** [Open an issue](https://github.com/DanCsoftware/Tabs/issues)
+- **Privacy concerns:** See [PRIVACY.md](PRIVACY.md)
+- **Chrome Web Store:** [Leave a review](https://chrome.google.com/webstore)
 
 ---
 
 ## ⭐ Show Your Support
 
 If this extension saves you time:
-- Star the repo on GitHub
-- Share with friends
-- Leave feedback
-- Contribute improvements
+
+- ⭐ Star the repo on GitHub
+- 📢 Share with friends
+- 💬 Leave feedback
+- 🔧 Contribute improvements
 
 ---
 
 **Made with ❤️ for people drowning in tabs**
 
-🔒 **Privacy-first** • 🆓 **Free forever** • 📖 **Open source**
+🔒 Privacy-first • 🆓 Free forever • 📖 Open source
+
+---
+
+## 🔗 Links
+
+- [Chrome Web Store](https://chrome.google.com/webstore) (coming soon)
+- [Privacy Policy](PRIVACY.md)
+- [GitHub Repository](https://github.com/DanCsoftware/Tabs)
