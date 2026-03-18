@@ -6,21 +6,8 @@ Smart tab organization powered by AI - learns from your usage
 
 ---
 
-## 📸 Screenshots
-
-<table>
-  <tr>
-    <td><img src="screenshots/screenshot-1.png" alt="Tabs before organizing" /></td>
-    <td><img src="screenshots/screenshot-2.png" alt="Extension popup" /></td>
-    <td><img src="screenshots/screenshot-3.png" alt="Organized tab groups" /></td>
-  </tr>
-  <tr>
-    <td align="center"><em>Before: Many ungrouped tabs</em></td>
-    <td align="center"><em>Extension popup with usage tracking</em></td>
-    <td align="center"><em>After: Clean organized groups</em></td>
-  </tr>
-</table>
-
+## We're LIVE
+https://chromewebstore.google.com/detail/tabs-ai-tab-organizer/mbfjkfbccmjidpdfochjgipamhobjbcb?authuser=0&hl=en
 ---
 
 ## ✨ Features
