@@ -8,6 +8,7 @@ Smart tab organization powered by AI - learns from your usage
 
 ## We're LIVE
 https://chromewebstore.google.com/detail/tabs-ai-tab-organizer/mbfjkfbccmjidpdfochjgipamhobjbcb?authuser=0&hl=en
+
 ---
 
 ## ✨ Features
@@ -25,7 +26,7 @@ https://chromewebstore.google.com/detail/tabs-ai-tab-organizer/mbfjkfbccmjidpdfo
 
 ### Installation
 
-1. Download from [Chrome Web Store](https://chrome.google.com/webstore) (or load unpacked for development)
+1. Download from [Chrome Web Store](https://chromewebstore.google.com/detail/tabs-ai-tab-organizer/mbfjkfbccmjidpdfochjgipamhobjbcb?authuser=0&hl=en) (or load unpacked for development)
 2. Click the extension icon
 3. Click "Organize Tabs"
 4. Done! Your tabs are automatically grouped
